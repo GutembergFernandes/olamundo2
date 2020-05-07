@@ -6,18 +6,14 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
 
-        <ion-title>Página Inicial</ion-title>
+        <ion-title>Não Faz Nada</ion-title>
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
 
-    <div class="content">
-        <p>Você está na página inicial da aplicação.</p>
-        <p>
-            <a href="usuarios/todos">Listar todos os usuários</a>
+    <p>Você está na página inicial da aplicação.</p>
 
-        </p>
-    </div>
+    <ion-button expand="block" class="ion-margin" (click)="listUsers()">Listar usuários</ion-button>
 
 </ion-content>
