@@ -3,6 +3,12 @@ import { Component, OnInit } from '@angular/core';
 // Importa bibliotecas do formulário
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
+// Importa o service da API
+import { UsersService } from 'src/app/services/users.service';
+
+// Importa roteamento
+import { NavController } from '@ionic/angular';
+
 @Component({
   selector: 'app-userform',
   templateUrl: './user-form.component.html',
@@ -15,7 +21,13 @@ export class UserformComponent implements OnInit {
 
   constructor(
     // Construtor do ReactiveForms ^^^^ 3 import ^^^^
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+
+    // Inicializa service da API
+    private usersService: UsersService,
+
+    // Roteamento
+    public navCtrl: NavController
   ) {
 
     // Definindo campos do formulário
@@ -26,7 +38,7 @@ export class UserformComponent implements OnInit {
 
         // Campo 'name'
         name: [                     // Nome do campo
-          null,                     // Valor inicial 'null'
+          null,          // Valor inicial 'null'
           Validators.compose([      // Regras de validação
             Validators.required,    // Campo obrigatório
             Validators.minLength(3) // Cumprimento mínimo
@@ -66,6 +78,49 @@ export class UserformComponent implements OnInit {
 
   // Método de submit do formulário
   onSubmit() {
-    console.log(this.userForm.value);
+
+    // console.log(this.userForm.value);
+
+    // Se o campo id está vazio, estamos cadastrando um novo usuário
+    if (this.userForm.value.id === null) {
+
+      // Cadastra usuário //
+
+      // Remove o campo id
+      delete this.userForm.value.id;
+
+      // Ajusta o valor do campo 'status' para numérico
+      if (!this.userForm.value.status) {
+        this.userForm.value.status = 0;
+      } else {
+        this.userForm.value.status = 1;
+      }
+
+      // Salvar dados na API
+      this.usersService.postUser(this.userForm.value).subscribe(
+
+        (res: any) => {
+
+          // Se foi adicionado
+          if (res.status === 'success') {
+
+            // Feedback
+            alert(`"${this.userForm.value.name}" foi adicionado com sucesso!\nClique em [Ok] para continuar...`);
+
+            // Retorna para a listagem
+            this.navCtrl.navigateForward('usuarios/todos');
+
+            // Limpa o formulário
+            // this.userForm.reset();
+          }
+        }
+      );
+
+      // Se o campo Id tem conteúdo, vamos atualizar
+    } else {
+
+      // Editar usuário
+
+    }
   }
 }
